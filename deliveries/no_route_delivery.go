@@ -2,7 +2,7 @@ package deliveries
 
 import (
 	"net/http"
-	"user-product-service/entities/dto"
+	"user-product-service/dto"
 
 	"github.com/gin-gonic/gin"
 )
