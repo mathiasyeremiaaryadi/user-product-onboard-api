@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"user-product-service/config"
-	"user-product-service/entities/models"
+	"user-product-service/entities"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -25,12 +25,12 @@ func (mysqldb *MySQLDatabase) SetDBConnection() {
 		log.Println("Database is connected")
 	}
 
-	mysqldb.db.Migrator().DropTable(&models.Role{}, &models.User{}, &models.Product{})
-	mysqldb.db.AutoMigrate(&models.Role{}, &models.User{}, &models.Product{})
+	mysqldb.db.Migrator().DropTable(&entities.Role{}, &entities.User{}, &entities.Product{})
+	mysqldb.db.AutoMigrate(&entities.Role{}, &entities.User{}, &entities.Product{})
 }
 
 func (mysqldb *MySQLDatabase) SetDBSeed() {
-	mysqldb.db.Create(&[]models.Role{
+	mysqldb.db.Create(&[]entities.Role{
 		{
 			Title:  "admin",
 			Active: true,
@@ -53,7 +53,7 @@ func (mysqldb *MySQLDatabase) SetDBSeed() {
 		},
 	})
 
-	mysqldb.db.Create(&[]models.User{
+	mysqldb.db.Create(&[]entities.User{
 		{
 			PersonalNumber: "123",
 			Password:       "secret123",
@@ -128,7 +128,7 @@ func (mysqldb *MySQLDatabase) SetDBSeed() {
 		},
 	})
 
-	mysqldb.db.Create(&[]models.Product{
+	mysqldb.db.Create(&[]entities.Product{
 		{
 			Name:        "Product A",
 			Description: "A very good and cheap product",

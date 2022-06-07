@@ -2,24 +2,24 @@ package usecases
 
 import (
 	"strconv"
+	"user-product-service/entities"
 	"user-product-service/entities/dto"
-	"user-product-service/entities/models"
 	"user-product-service/repositories"
 )
 
-type UserUseCase struct {
+type userUseCase struct {
 	userRepository repositories.UserRepository
 }
 
 func NewUserUseCase(userRepository repositories.UserRepository) UserUseCase {
-	return UserUseCase{
+	return userUseCase{
 		userRepository: userRepository,
 	}
 }
 
-func (userUseCase UserUseCase) GetUsersUseCase() ([]models.UserList, error) {
-	var userList []models.UserList
-	users, err := userUseCase.userRepository.GetUsersRepository(userList)
+func (userUC userUseCase) GetUsersUseCase() ([]entities.UserList, error) {
+	var userList []entities.UserList
+	users, err := userUC.userRepository.GetUsersRepository(userList)
 	if err != nil {
 		return users, err
 	}
@@ -27,15 +27,15 @@ func (userUseCase UserUseCase) GetUsersUseCase() ([]models.UserList, error) {
 	return users, nil
 }
 
-func (userUseCase UserUseCase) GetUserUseCase(id string) (models.UserDetail, error) {
-	var userDetail models.UserDetail
+func (userUC userUseCase) GetUserUseCase(id string) (entities.UserDetail, error) {
+	var userDetail entities.UserDetail
 
 	userID, err := strconv.Atoi(id)
 	if err != nil {
 		return userDetail, err
 	}
 
-	user, err := userUseCase.userRepository.GetUserRepository(userDetail, userID)
+	user, err := userUC.userRepository.GetUserRepository(userDetail, userID)
 	if err != nil {
 		return user, err
 	}
@@ -43,8 +43,8 @@ func (userUseCase UserUseCase) GetUserUseCase(id string) (models.UserDetail, err
 	return user, nil
 }
 
-func (userUseCase UserUseCase) CreateUserUseCase(userPostRequestBody dto.UserPostRequestBody) (models.User, error) {
-	userData := models.User{
+func (userUC userUseCase) CreateUserUseCase(userPostRequestBody dto.UserPostRequestBody) (entities.User, error) {
+	userData := entities.User{
 		PersonalNumber: userPostRequestBody.PersonalNumber,
 		Password:       userPostRequestBody.Password,
 		Email:          userPostRequestBody.Email,
@@ -52,7 +52,7 @@ func (userUseCase UserUseCase) CreateUserUseCase(userPostRequestBody dto.UserPos
 		RoleID:         5,
 	}
 
-	createdUser, err := userUseCase.userRepository.CreateUserRepository(userData)
+	createdUser, err := userUC.userRepository.CreateUserRepository(userData)
 	if err != nil {
 		return createdUser, err
 	}
@@ -60,8 +60,8 @@ func (userUseCase UserUseCase) CreateUserUseCase(userPostRequestBody dto.UserPos
 	return createdUser, nil
 }
 
-func (userUseCase UserUseCase) UpdateUserUseCase(userPutRequestBody dto.UserPutRequestBody, id string) (int, error) {
-	userData := models.User{
+func (userUC userUseCase) UpdateUserUseCase(userPutRequestBody dto.UserPutRequestBody, id string) (int, error) {
+	userData := entities.User{
 		PersonalNumber: userPutRequestBody.PersonalNumber,
 		Password:       userPutRequestBody.Password,
 		Email:          userPutRequestBody.Email,
@@ -75,7 +75,7 @@ func (userUseCase UserUseCase) UpdateUserUseCase(userPutRequestBody dto.UserPutR
 		return userID, err
 	}
 
-	updatedUserID, err := userUseCase.userRepository.UpdateUserRepository(userData, userID)
+	updatedUserID, err := userUC.userRepository.UpdateUserRepository(userData, userID)
 	if err != nil {
 		return updatedUserID, err
 	}
@@ -83,15 +83,15 @@ func (userUseCase UserUseCase) UpdateUserUseCase(userPutRequestBody dto.UserPutR
 	return updatedUserID, nil
 }
 
-func (userUseCase UserUseCase) DeleteUserUseCase(id string) error {
-	var deletedUser models.User
+func (userUC userUseCase) DeleteUserUseCase(id string) error {
+	var deletedUser entities.User
 
 	userID, err := strconv.Atoi(id)
 	if err != nil {
 		return err
 	}
 
-	err = userUseCase.userRepository.DeleteUserRepository(deletedUser, userID)
+	err = userUC.userRepository.DeleteUserRepository(deletedUser, userID)
 	if err != nil {
 		return err
 	}

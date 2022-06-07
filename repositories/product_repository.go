@@ -2,75 +2,75 @@ package repositories
 
 import (
 	"errors"
-	"user-product-service/entities/models"
+	"user-product-service/entities"
 
 	"gorm.io/gorm"
 )
 
-type ProductRepository struct {
+type productRepository struct {
 	db *gorm.DB
 }
 
 func NewProductRepository(db *gorm.DB) ProductRepository {
-	return ProductRepository{
+	return productRepository{
 		db: db,
 	}
 }
 
-func (productRepository ProductRepository) GetProductsRepository(productList []models.ProductList) ([]models.ProductList, error) {
-	if err := productRepository.db.Model(&models.Product{}).Find(&productList).Error; err != nil {
+func (productRepo productRepository) GetProductsRepository(productList []entities.ProductList) ([]entities.ProductList, error) {
+	if err := productRepo.db.Model(&entities.Product{}).Find(&productList).Error; err != nil {
 		return productList, err
 	}
 
 	return productList, nil
 }
 
-func (productRepository ProductRepository) GetProductRepository(productDetail models.ProductDetail, id int) (models.ProductDetail, error) {
-	if err := productRepository.db.Preload("Maker").Preload("Checker").Preload("Signer").Model(&models.Product{}).First(&productDetail, id).Error; err != nil {
+func (productRepo productRepository) GetProductRepository(productDetail entities.ProductDetail, id int) (entities.ProductDetail, error) {
+	if err := productRepo.db.Preload("Maker").Preload("Checker").Preload("Signer").Model(&entities.Product{}).First(&productDetail, id).Error; err != nil {
 		return productDetail, err
 	}
 
 	return productDetail, nil
 }
 
-func (productRepository ProductRepository) CreateProductRepository(product models.Product) (models.Product, error) {
-	if err := productRepository.db.Omit("ID", "Status", "CheckerID", "SignerID").Create(&product).Error; err != nil {
+func (productRepo productRepository) CreateProductRepository(product entities.Product) (entities.Product, error) {
+	if err := productRepo.db.Omit("ID", "Status", "CheckerID", "SignerID").Create(&product).Error; err != nil {
 		return product, err
 	}
 
 	return product, nil
 }
 
-func (productRepository ProductRepository) UpdateProductRepository(product models.Product, id int) (int, error) {
-	if result := productRepository.db.Where("id = ?", id).Updates(&product); result.RowsAffected == 0 {
+func (productRepo productRepository) UpdateProductRepository(product entities.Product, id int) (int, error) {
+	if result := productRepo.db.Where("id = ?", id).Updates(&product); result.RowsAffected == 0 {
 		return id, errors.New("failed")
 	}
 
 	return id, nil
 }
 
-func (productRepository ProductRepository) CheckProductRepository(product models.Product, id int) (int, error) {
-	if result := productRepository.db.Where("id = ?", id).Updates(&product); result.RowsAffected == 0 {
+func (productRepo productRepository) CheckProductRepository(product entities.Product, id int) (int, error) {
+	if result := productRepo.db.Where("id = ?", id).Updates(&product); result.RowsAffected == 0 {
 		return id, errors.New("failed")
 	}
 
 	return id, nil
 }
 
-func (productRepository ProductRepository) PublishProductRepository(product models.Product, id int) (int, error) {
-	if result := productRepository.db.Where("id = ?", id).Updates(&product); result.RowsAffected == 0 {
+func (productRepo productRepository) PublishProductRepository(product entities.Product, id int) (int, error) {
+	if result := productRepo.db.Where("id = ?", id).Updates(&product); result.RowsAffected == 0 {
 		return id, errors.New("failed")
 	}
 
 	return id, nil
 }
 
-func (productRepository ProductRepository) DeleteProductRepository(product models.Product, id int) error {
-	if err := productRepository.db.First(&product, id).Error; err != nil {
+func (productRepo productRepository) DeleteProductRepository(product entities.Product, id int) error {
+	if err := productRepo.db.First(&product, id).Error; err != nil {
 		return err
 	}
 
-	if err := productRepository.db.Delete(&product, id).Error; err != nil {
+	if err := productRepo.db.Delete(&product, id).Error; err != nil {
 		return err
 	}
 

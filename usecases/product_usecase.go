@@ -2,25 +2,25 @@ package usecases
 
 import (
 	"strconv"
+	"user-product-service/entities"
 	"user-product-service/entities/dto"
-	"user-product-service/entities/models"
 	"user-product-service/repositories"
 )
 
-type ProductUseCase struct {
+type productUseCase struct {
 	productRepository repositories.ProductRepository
 }
 
 func NewProductUseCase(productRepository repositories.ProductRepository) ProductUseCase {
-	return ProductUseCase{
+	return productUseCase{
 		productRepository: productRepository,
 	}
 }
 
-func (productUseCase ProductUseCase) GetProductsUseCase() ([]models.ProductList, error) {
-	var productList []models.ProductList
+func (productUC productUseCase) GetProductsUseCase() ([]entities.ProductList, error) {
+	var productList []entities.ProductList
 
-	products, err := productUseCase.productRepository.GetProductsRepository(productList)
+	products, err := productUC.productRepository.GetProductsRepository(productList)
 	if err != nil {
 		return products, err
 	}
@@ -28,15 +28,15 @@ func (productUseCase ProductUseCase) GetProductsUseCase() ([]models.ProductList,
 	return products, err
 }
 
-func (productUseCase ProductUseCase) GetProductUseCase(id string) (models.ProductDetail, error) {
-	var productDetail models.ProductDetail
+func (productUC productUseCase) GetProductUseCase(id string) (entities.ProductDetail, error) {
+	var productDetail entities.ProductDetail
 
 	productID, err := strconv.Atoi(id)
 	if err != nil {
 		return productDetail, err
 	}
 
-	product, err := productUseCase.productRepository.GetProductRepository(productDetail, productID)
+	product, err := productUC.productRepository.GetProductRepository(productDetail, productID)
 	if err != nil {
 		return product, err
 	}
@@ -44,14 +44,14 @@ func (productUseCase ProductUseCase) GetProductUseCase(id string) (models.Produc
 	return product, nil
 }
 
-func (productUseCase ProductUseCase) CreateProductUseCase(productPostRequestBody dto.ProductRequestBody) (models.Product, error) {
-	productData := models.Product{
+func (productUC productUseCase) CreateProductUseCase(productPostRequestBody dto.ProductRequestBody) (entities.Product, error) {
+	productData := entities.Product{
 		Name:        productPostRequestBody.Name,
 		Description: productPostRequestBody.Description,
 		MakerID:     2,
 	}
 
-	createdProduct, err := productUseCase.productRepository.CreateProductRepository(productData)
+	createdProduct, err := productUC.productRepository.CreateProductRepository(productData)
 	if err != nil {
 		return createdProduct, err
 	}
@@ -59,8 +59,8 @@ func (productUseCase ProductUseCase) CreateProductUseCase(productPostRequestBody
 	return createdProduct, nil
 }
 
-func (productUseCase ProductUseCase) UpdateProductUseCase(productPutRequestBody dto.ProductRequestBody, id string) (int, error) {
-	productData := models.Product{
+func (productUC productUseCase) UpdateProductUseCase(productPutRequestBody dto.ProductRequestBody, id string) (int, error) {
+	productData := entities.Product{
 		Name:        productPutRequestBody.Name,
 		Description: productPutRequestBody.Description,
 	}
@@ -70,7 +70,7 @@ func (productUseCase ProductUseCase) UpdateProductUseCase(productPutRequestBody 
 		return productID, err
 	}
 
-	updatedProductID, err := productUseCase.productRepository.UpdateProductRepository(productData, productID)
+	updatedProductID, err := productUC.productRepository.UpdateProductRepository(productData, productID)
 	if err != nil {
 		return updatedProductID, err
 	}
@@ -78,8 +78,8 @@ func (productUseCase ProductUseCase) UpdateProductUseCase(productPutRequestBody 
 	return updatedProductID, nil
 }
 
-func (productUseCase ProductUseCase) CheckProductUseCase(productPutRequestBody dto.ProductRequestBody, id string) (int, error) {
-	productData := models.Product{
+func (productUC productUseCase) CheckProductUseCase(productPutRequestBody dto.ProductRequestBody, id string) (int, error) {
+	productData := entities.Product{
 		Name:        productPutRequestBody.Name,
 		Description: productPutRequestBody.Description,
 		Status:      "approved",
@@ -91,7 +91,7 @@ func (productUseCase ProductUseCase) CheckProductUseCase(productPutRequestBody d
 		return productID, err
 	}
 
-	checkedProductID, err := productUseCase.productRepository.CheckProductRepository(productData, productID)
+	checkedProductID, err := productUC.productRepository.CheckProductRepository(productData, productID)
 	if err != nil {
 		return checkedProductID, err
 	}
@@ -99,8 +99,8 @@ func (productUseCase ProductUseCase) CheckProductUseCase(productPutRequestBody d
 	return checkedProductID, nil
 }
 
-func (productUseCase ProductUseCase) PublishProductUseCase(productPutRequestBody dto.ProductRequestBody, id string) (int, error) {
-	productData := models.Product{
+func (productUC productUseCase) PublishProductUseCase(productPutRequestBody dto.ProductRequestBody, id string) (int, error) {
+	productData := entities.Product{
 		Name:        productPutRequestBody.Name,
 		Description: productPutRequestBody.Description,
 		Status:      "active",
@@ -112,7 +112,7 @@ func (productUseCase ProductUseCase) PublishProductUseCase(productPutRequestBody
 		return productID, err
 	}
 
-	publishedProductID, err := productUseCase.productRepository.PublishProductRepository(productData, productID)
+	publishedProductID, err := productUC.productRepository.PublishProductRepository(productData, productID)
 	if err != nil {
 		return publishedProductID, err
 	}
@@ -120,15 +120,15 @@ func (productUseCase ProductUseCase) PublishProductUseCase(productPutRequestBody
 	return publishedProductID, nil
 }
 
-func (productUseCase ProductUseCase) DeleteProductUseCase(id string) error {
-	var deletedProduct models.Product
+func (productUC productUseCase) DeleteProductUseCase(id string) error {
+	var deletedProduct entities.Product
 
 	productID, err := strconv.Atoi(id)
 	if err != nil {
 		return err
 	}
 
-	err = productUseCase.productRepository.DeleteProductRepository(deletedProduct, productID)
+	err = productUC.productRepository.DeleteProductRepository(deletedProduct, productID)
 	if err != nil {
 		return err
 	}

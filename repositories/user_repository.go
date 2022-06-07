@@ -2,59 +2,59 @@ package repositories
 
 import (
 	"errors"
-	"user-product-service/entities/models"
+	"user-product-service/entities"
 
 	"gorm.io/gorm"
 )
 
-type UserRepository struct {
+type userRepository struct {
 	db *gorm.DB
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
-	return UserRepository{
+	return userRepository{
 		db: db,
 	}
 }
 
-func (userRepository UserRepository) GetUsersRepository(userList []models.UserList) ([]models.UserList, error) {
-	if err := userRepository.db.Preload("Role").Model(&models.User{}).Find(&userList).Error; err != nil {
+func (userRepo userRepository) GetUsersRepository(userList []entities.UserList) ([]entities.UserList, error) {
+	if err := userRepo.db.Preload("Role").Model(&entities.User{}).Find(&userList).Error; err != nil {
 		return userList, err
 	}
 
 	return userList, nil
 }
 
-func (userRepository UserRepository) GetUserRepository(userDetail models.UserDetail, id int) (models.UserDetail, error) {
-	if err := userRepository.db.Preload("Role").Model(&models.User{}).First(&userDetail, id).Error; err != nil {
+func (userRepo userRepository) GetUserRepository(userDetail entities.UserDetail, id int) (entities.UserDetail, error) {
+	if err := userRepo.db.Preload("Role").Model(&entities.User{}).First(&userDetail, id).Error; err != nil {
 		return userDetail, err
 	}
 
 	return userDetail, nil
 }
 
-func (userRepository UserRepository) CreateUserRepository(user models.User) (models.User, error) {
-	if err := userRepository.db.Create(&user).Error; err != nil {
+func (userRepo userRepository) CreateUserRepository(user entities.User) (entities.User, error) {
+	if err := userRepo.db.Create(&user).Error; err != nil {
 		return user, err
 	}
 
 	return user, nil
 }
 
-func (userRepository UserRepository) UpdateUserRepository(user models.User, id int) (int, error) {
-	if result := userRepository.db.Where("id = ?", id).Updates(&user); result.RowsAffected == 0 {
+func (userRepo userRepository) UpdateUserRepository(user entities.User, id int) (int, error) {
+	if result := userRepo.db.Where("id = ?", id).Updates(&user); result.RowsAffected == 0 {
 		return id, errors.New("failed")
 	}
 
 	return id, nil
 }
 
-func (userRepository UserRepository) DeleteUserRepository(user models.User, id int) error {
-	if err := userRepository.db.First(&user, id).Error; err != nil {
+func (userRepo userRepository) DeleteUserRepository(user entities.User, id int) error {
+	if err := userRepo.db.First(&user, id).Error; err != nil {
 		return err
 	}
 
-	if err := userRepository.db.Delete(&user, id).Error; err != nil {
+	if err := userRepo.db.Delete(&user, id).Error; err != nil {
 		return err
 	}
 
