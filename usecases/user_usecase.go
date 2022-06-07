@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"strconv"
+	"user-product-service/dto"
 	"user-product-service/entities"
-	"user-product-service/entities/dto"
 	"user-product-service/repositories"
 )
 

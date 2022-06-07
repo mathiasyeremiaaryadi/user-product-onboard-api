@@ -1,8 +1,8 @@
 package usecases
 
 import (
+	"user-product-service/dto"
 	"user-product-service/entities"
-	"user-product-service/entities/dto"
 )
 
 type ProductUseCase interface {
